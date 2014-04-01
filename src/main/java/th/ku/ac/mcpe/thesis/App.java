@@ -18,8 +18,6 @@ public class App {
 
 	public static void main(String[] args) {
 
-		PrintWriter writer = null;
-
 		try {
 
 			String cpath = "/Users/tomz/Thesis/Test/C";
@@ -30,32 +28,49 @@ public class App {
 			List<String> blistFile = getCListFiles(bpath);
 
 			for (String cfile : clistFile) {
-				if (cfile.equalsIgnoreCase("seqCno_sup001_1234.txt")) {
-					BufferedReader in = new BufferedReader(new FileReader(cfile));
-					
+				if (cfile.contains("seqCno_sup001_1234.txt")) {
+
+					BufferedReader in = new BufferedReader(
+							new FileReader(cfile));
+
 					for (String bfile : blistFile) {
-						if (bfile.equalsIgnoreCase("seqCno1234.txt")) {
-							// Do Bot seq 1234
-							while (in.ready()) {
-								String s = in.readLine();
+						if (bfile.contains("seqCno1234.txt")) {
+
+							BufferedReader trxN = new BufferedReader(
+									new FileReader(bfile));
+							int foundCount =0;
+							while (trxN.ready()) {
+								String trxnLine = trxN.readLine();
+
+								// Do Bot seq 1234
+								while (in.ready()) {
+									String s = in.readLine();
+									String[] rowRecord = s.split("\\s+");
+
+									// / check that this row is 0|1
+									boolean isFound = true;
+									for (int i = 0; i < rowRecord.length - 1; i++) {
+										isFound &= trxnLine.matches("\\b"
+												+ rowRecord[i] + "\\b");
+										if (!isFound) {
+											break;
+										}
+									}
+									if (rowRecord.length > 1) {
+										if (isFound) {
+											System.out.print("1");
+											foundCount++;
+										} else {
+											System.out.print("0");
+										}
+									}
+								}
 							}
+							System.out.println("\n");
+							System.out.println("Found:" + foundCount);
 						}
 					}
-				}
-
-				writer = new PrintWriter(cfile + ".out", "UTF-8");
-				System.out.println("process c file -> " + cfile);
-
-				CType ctype = new CType();
-				ctype.setDataSeq(readSeqBType(cfile));
-				for (List<String> c : ctype.getDataSeq()) {
-					if (c.size() > 0) {
-						for (String bfile : blistFile) {
-							BType bType = new BType();
-							bType.setDataSeq(readSeqBType(bfile));
-							convertToBinary(writer, c, bType);
-						}
-					}
+					in.close();
 				}
 			}
 		} catch (FileNotFoundException e1) {
@@ -64,8 +79,6 @@ public class App {
 			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			writer.close();
 		}
 	}
 
