@@ -35,10 +35,10 @@ public class App {
 
 			for (String cfile : clistFile) {
 
-				if (cfile.equalsIgnoreCase(cpath+"/seqCno_sup001_1234.txt")) {
-					
+				if (cfile.equalsIgnoreCase(cpath + "/seqCno_sup001_1234.txt")) {
+
 					PrintWriter printer = getPrintWriter(cfile + ".out");
-					
+
 					for (String bfile : blistFile) {
 						if (bfile.contains("seqCno1234.txt")) {
 
@@ -133,99 +133,5 @@ public class App {
 		}
 
 		return listFiles;
-	}
-
-	/**
-	 * @param writer
-	 * @param cType
-	 * @param bType
-	 */
-	private static void convertToBinary(PrintWriter writer, List<String> cdata,
-			BType btype) {
-		lookUpFile(writer, cdata, btype);
-	}
-
-	/**
-	 * @param writer
-	 * @param dataSeq
-	 * @param btype
-	 * @param cPath
-	 */
-	private static void lookUpFile(PrintWriter writer, List<String> cdata,
-			BType btype) {
-		printList(writer, cdata);
-
-		for (List<String> dataSeq : btype.getDataSeq()) {
-
-			int found = 0;
-			for (String data : cdata) {
-				if (dataSeq.contains(data)) {
-					found++;
-				}
-			}
-
-			if (cdata.size() == found) {
-				writer.print("1");
-			} else {
-				writer.print("0");
-			}
-		}
-		writer.println();
-	}
-
-	/**
-	 * @param writer
-	 * @param dataSeq
-	 */
-	private static void printList(PrintWriter writer, List<String> dataSeq) {
-
-		String space = " ";
-		int count = 0;
-
-		for (String data : dataSeq) {
-			writer.print(data);
-			if (++count < dataSeq.size()) {
-				writer.print(space);
-			}
-		}
-
-		writer.print(space);
-
-		writer.print(space);
-
-	}
-
-	public static List<List<String>> readSeqBType(String path)
-			throws IOException {
-		List<List<String>> dataList = new ArrayList<List<String>>();
-		BufferedReader in = null;
-
-		try {
-			in = new BufferedReader(new FileReader(path));
-			while (in.ready()) {
-
-				String s = in.readLine();
-				String[] rowRecord = s.split("\\s+");
-				List<String> list = new ArrayList<String>();
-
-				for (String row : rowRecord) {
-					if (!(row.contains("(") || row.contains(")"))) {
-						list.add(row);
-					} else {
-						// support value
-					}
-				}
-				dataList.add(list);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-		return dataList;
 	}
 }
