@@ -1,38 +1,25 @@
 package th.ku.ac.mcpe.thesis;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+public class AppTest {
+	@Test
+	public void testMatching() {
+		String search = "115	148046	15634	15740	15886	19506	19507	2164";
+		Matcher matcher = Pattern.compile("\\b115\\b").matcher(search);
+		Assert.assertEquals(matcher.find(), true);
+	}
+	
+	@Test
+	public void testTrimTab() {
+		String tabString = "\tTomz\t";
+		Assert.assertTrue("Tomz".equals(tabString.trim()));
+	}
 }
