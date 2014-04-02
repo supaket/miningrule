@@ -38,28 +38,20 @@ public class AppTest {
 		// System.out.println("4:" + matcher.group(4));
 		// }
 	}
+
 	@Test
 	public void testGetLineN2() {
 		String line = "115\t(704)\t000000000001000000000000000000000000000";
-		Matcher matcher = Pattern.compile("^(\\d+)\\t(\\((\\d+)\\))\t([0|1]+)$")
-				.matcher(line);
+		Matcher matcher = Pattern
+				.compile("^(\\d+)\\t(\\((\\d+)\\))\t([0|1]+)$").matcher(line);
 		Assert.assertTrue(matcher.find());
 	}
 
 	@Test
-	public void testIteratorString() {
-		String transactionMatched = "1111100000";
-		for (int i = 0; i < transactionMatched.length(); i++) {
-			char c = transactionMatched.charAt(i);
-			System.err.println(c);
-		}
-	}
-
-	@Test
 	public void testRevertL1() {
-		String expected = "~115\t(168878)\t0000011111";
-		String input = "115\t(704)\t1111100000";
-		Matcher matcher = Pattern.compile("^(\\d+)\\t(\\((\\d+)\\))\t([0|1]+)$")
+		String expected = "~115 (168878)\t0000011111";
+		String input = "115 (704)\t1111100000";
+		Matcher matcher = Pattern.compile("^(\\d+) (\\((\\d+)\\))\t([0|1]+)$")
 				.matcher(input);
 		if (matcher.find()) {
 			FindNegative findNeg = new FindNegative();
