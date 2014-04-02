@@ -57,6 +57,7 @@ public class FindNegative {
 			}
 			printwriter.close();
 			nsl1Printer.close();
+			in.close();
 			System.out.println("I process NL1: " + revertL1Count + " lines");
 			System.out.println("I process NSL1: " + revertNSL1Count + " lines");
 			System.out.println("I process " + countDoLine + " lines");
