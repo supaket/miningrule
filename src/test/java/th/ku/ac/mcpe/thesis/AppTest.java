@@ -3,8 +3,6 @@ package th.ku.ac.mcpe.thesis;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.security.auth.login.FailedLoginException;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

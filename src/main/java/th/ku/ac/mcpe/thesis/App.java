@@ -26,65 +26,50 @@ public class App {
 
 		try {
 
-			String cpath = "/Users/tomz/Thesis/Test/C";
+			String cfile = args[0];
+			String bfile = args[1];
 
-			List<String> clistFile = getCListFiles(cpath);
+			PrintWriter printer = getPrintWriter(cfile + ".out");
 
-			String bpath = "/Users/tomz/Thesis/Test/B";
-			List<String> blistFile = getCListFiles(bpath);
+			BufferedReader in = new BufferedReader(new FileReader(cfile));
 
-			for (String cfile : clistFile) {
+			while (in.ready()) {
 
-				if (cfile.equalsIgnoreCase(cpath + "/seqCno_sup001_1234.txt")) {
+				String fline = in.readLine();
+				String[] freq = fline.split("\\s+");
 
-					PrintWriter printer = getPrintWriter(cfile + ".out");
+				if (freq.length > 1) {
+					printer.print(fline + "\t");
+					BufferedReader trxN = new BufferedReader(new FileReader(
+							bfile));
+					while (trxN.ready()) {
+						String trxnLine = trxN.readLine();
 
-					for (String bfile : blistFile) {
-						if (bfile.contains("seqCno1234.txt")) {
-
-							BufferedReader in = new BufferedReader(
-									new FileReader(cfile));
-
-							while (in.ready()) {
-
-								String fline = in.readLine();
-								String[] freq = fline.split("\\s+");
-
-								if (freq.length > 1) {
-									printer.print(fline + "\t");
-									BufferedReader trxN = new BufferedReader(
-											new FileReader(bfile));
-									while (trxN.ready()) {
-										String trxnLine = trxN.readLine();
-
-										boolean isFound = true;
-										for (int i = 0; i < freq.length - 1; i++) {
-											isFound &= isFreqFound(trxnLine,
-													freq[i]);
-											if (!isFound) {
-												break;
-											}
-										}
-
-										if (isFound) {
-											printer.print("1");
-										} else {
-											printer.print("0");
-										}
-									}
-
-									printer.println();
-									trxN.close();
-								} else {
-									printer.println(fline);
-								}
+						boolean isFound = true;
+						for (int i = 0; i < freq.length - 1; i++) {
+							isFound &= isFreqFound(trxnLine, freq[i]);
+							if (!isFound) {
+								break;
 							}
+						}
 
-							in.close();
+						if (isFound) {
+							printer.print("1");
+						} else {
+							printer.print("0");
 						}
 					}
+
+					printer.println();
+					trxN.close();
+				} else {
+					printer.println(fline);
 				}
 			}
+
+			in.close();
+			FindNegative findNeg = new FindNegative();
+			findNeg.parsePositiveFile(cfile + ".out");
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (UnsupportedEncodingException e1) {
