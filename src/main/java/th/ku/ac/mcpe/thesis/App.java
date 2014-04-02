@@ -35,7 +35,7 @@ public class App {
 
 			for (String cfile : clistFile) {
 
-			if (cfile.equalsIgnoreCase(cpath + "/seqCno_sup001_1234.txt")) {
+				if (cfile.equalsIgnoreCase(cpath + "/seqCno_sup001_1234.txt")) {
 
 					PrintWriter printer = getPrintWriter(cfile + ".out");
 
@@ -75,6 +75,8 @@ public class App {
 
 									printer.println();
 									trxN.close();
+								} else {
+									printer.println(fline);
 								}
 							}
 
