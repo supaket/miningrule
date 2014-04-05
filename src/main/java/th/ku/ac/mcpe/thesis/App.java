@@ -18,81 +18,81 @@ import java.util.regex.Pattern;
  */
 public class App {
 
-	private static Map<String, PrintWriter> printWriterMap = new HashMap<String, PrintWriter>();
+  private static Map<String, PrintWriter> printWriterMap = new HashMap<String, PrintWriter>();
 
-	public static void main(String[] args) {
+  public static void main(String[] args) {
 
-		try {
+    try {
 
-			String cfile = args[0];
-			String bfile = args[1];
+      String cfile = args[0];
+      String bfile = args[1];
 
-			PrintWriter printer = getPrintWriter(cfile + ".out");
+      PrintWriter printer = getPrintWriter(cfile + ".out");
 
-			BufferedReader in = new BufferedReader(new FileReader(cfile));
+      BufferedReader in = new BufferedReader(new FileReader(cfile));
 
-			while (in.ready()) {
+      while (in.ready()) {
 
-				String fline = in.readLine();
-				String[] freq = fline.split("\\s+");
+        String fline = in.readLine();
+        String[] freq = fline.split("\\s+");
 
-				if (freq.length > 1) {
-					printer.print(fline + "\t");
-					BufferedReader trxN = new BufferedReader(new FileReader(
-							bfile));
-					while (trxN.ready()) {
-						String trxnLine = trxN.readLine();
+        if (freq.length > 1) {
+          printer.print(fline + "\t");
+          BufferedReader trxN = new BufferedReader(new FileReader(bfile));
+          while (trxN.ready()) {
+            String trxnLine = trxN.readLine();
 
-						boolean isFound = true;
-						for (int i = 0; i < freq.length - 1; i++) {
-							isFound &= isFreqFound(trxnLine, freq[i]);
-							if (!isFound) {
-								break;
-							}
-						}
+            boolean isFound = true;
+            for (int i = 0; i < freq.length - 1; i++) {
+              isFound &= isFreqFound(trxnLine, freq[i]);
+              if (!isFound) {
+                break;
+              }
+            }
 
-						if (isFound) {
-							printer.print("1");
-						} else {
-							printer.print("0");
-						}
-					}
+            if (isFound) {
+              printer.print("1");
+            } else {
+              printer.print("0");
+            }
+          }
 
-					printer.println();
-					trxN.close();
-				} else {
-					printer.println(fline);
-				}
-			}
+          printer.println();
+          trxN.close();
+        } else {
+          printer.println(fline);
+        }
+      }
 
-			in.close();
-			FindNegative findNeg = new FindNegative();
-			findNeg.parsePositiveFile(cfile + ".out");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+      in.close();
+      FindNegative findNeg = new FindNegative();
+      String positiveFileName = cfile + ".out";
 
-	private static PrintWriter getPrintWriter(String fileName) {
-		PrintWriter printwriter = printWriterMap.get(fileName);
-		if (printwriter == null) {
-			File file = new File(fileName);
-			try {
-				printwriter = new PrintWriter(file);
-				printWriterMap.put(fileName, printwriter);
-			} catch (FileNotFoundException e) {
-			}
-		}
-		return printwriter;
-	}
+      //Long run
+      findNeg.parsePositiveFile(positiveFileName);
+    } catch (FileNotFoundException e1) {
+      e1.printStackTrace();
+    } catch (UnsupportedEncodingException e1) {
+      e1.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-	private static boolean isFreqFound(String search, String record) {
-		Matcher matcher = Pattern.compile("\\b(\\t)*" + record + "\\b(\\t)*")
-				.matcher(search);
-		return matcher.find();
-	}
+  private static PrintWriter getPrintWriter(String fileName) {
+    PrintWriter printwriter = printWriterMap.get(fileName);
+    if (printwriter == null) {
+      File file = new File(fileName);
+      try {
+        printwriter = new PrintWriter(file);
+        printWriterMap.put(fileName, printwriter);
+      } catch (FileNotFoundException e) {}
+    }
+    return printwriter;
+  }
+
+  private static boolean isFreqFound(String search, String record) {
+    Matcher matcher = Pattern.compile("\\b(\\t)*" + record + "\\b(\\t)*").matcher(search);
+    return matcher.find();
+  }
 }
