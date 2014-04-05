@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class GenerateL2 {
 
   public boolean isFound(String lineP, String nl1Case) {
-    String pattern = "^(" + lineP + " +)\\((\\d+)\\)\\t([0|1]+)$";
+    String pattern = "^(\\d+) \\((\\d+)\\)\\t([0|1]+)$";
 
     //    String case1 = "^(~\\d+ +)\\((\\d+)\\)\\t([0|1]+)";
     //    String case2 = "^~\\(((\\d+ *)+)\\) \\((\\d+)\\)\\t([0|1]+)";
