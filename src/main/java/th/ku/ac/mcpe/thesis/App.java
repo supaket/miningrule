@@ -7,9 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -96,29 +94,5 @@ public class App {
 		Matcher matcher = Pattern.compile("\\b(\\t)*" + record + "\\b(\\t)*")
 				.matcher(search);
 		return matcher.find();
-	}
-
-	/**
-	 * 
-	 * List file in path with extension .txt in case sensitive
-	 * 
-	 * @param path
-	 */
-	private static List<String> getCListFiles(String path) {
-
-		List<String> listFiles = new ArrayList<String>();
-		File folder = new File(path);
-		File[] listOfFiles = folder.listFiles();
-
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				String files = listOfFiles[i].getName();
-				if (files.endsWith(".txt") || files.endsWith(".TXT")) {
-					listFiles.add(path.concat(File.separator).concat(files));
-				}
-			}
-		}
-
-		return listFiles;
 	}
 }
