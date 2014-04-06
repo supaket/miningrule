@@ -7,10 +7,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.perf4j.LoggingStopWatch;
+import org.perf4j.StopWatch;
+
 public class GenerateL2 {
+
+  public String generatedL2(String line1, String line2) {
+    if (!isFound(line1, line2)) {
+      return join(line1, line2);
+    }
+    return null;
+  }
 
   public boolean isFound(String lineP, String nl1Case) {
     PositiveSet positive = getPositiveBit(lineP);
@@ -29,16 +40,14 @@ public class GenerateL2 {
 
     String pattern = "^(\\d+) \\((\\d+)\\)\\t([0|1]+)$";
     Matcher matcher = Pattern.compile(pattern).matcher(lineP);
-    PositiveSet positive = null;
 
     if (matcher.find()) {
-      positive = new PositiveSet();
+      PositiveSet positive = new PositiveSet();
       positive.setFreq(matcher.group(1));
       positive.setPostiveBit(matcher.group(3));
-
+      return positive;
     }
-
-    return positive;
+    return null;
   }
 
   public String join(String lineInputP, String nl1Case1) {
@@ -65,10 +74,26 @@ public class GenerateL2 {
         s = positive.getFreq() + " " + s;
 
         s += " ";
+
+        StopWatch stopWatch = new LoggingStopWatch();
+        BigInteger bigInt = new BigInteger(positive.getPostiveBit(), 2);
+        BigInteger joinResult = bigInt.and(new BigInteger(nslMatcher.group(7), 2));
+
+        s += "(" + joinResult.bitCount() + ")";
+        s += "\t";
+        s += joinResult.toString(2);
+        
+        stopWatch.stop("AND BTI OPER");
+
+        /**
+         StopWatch stopWatch = new LoggingStopWatch();
+         
         PositiveSet positiveResult = anbit(positive.getPostiveBit(), nslMatcher.group(7));
+        stopWatch.stop("positiveResult");
         s += "(" + positiveResult.getSupport() + ")";
         s += "\t";
         s += positiveResult.getPostiveBit();
+        */
         return s;
       }
     }
@@ -98,11 +123,7 @@ public class GenerateL2 {
 
   public static void main(final String[] args) {
     try {
-
-
       String positiveFileName = args[0];
-      positiveFileName = "seqCno_sup001_1234.txt.out";
-
 
       String nl2FileName = positiveFileName + ".NL2.txt";
       File nL2File = new File(nl2FileName);
@@ -111,22 +132,25 @@ public class GenerateL2 {
       GenerateL2 genL2 = new GenerateL2();
 
       BufferedReader posBr = new BufferedReader(new FileReader(positiveFileName));
-      
+
       boolean isFirstLine = true;
       while (posBr.ready()) {
         String posline = posBr.readLine();
         if (isFirstLine) {
           isFirstLine = false;
+          continue;
         }
 
         BufferedReader genL2BrNL1 = new BufferedReader(new FileReader(positiveFileName + ".NL1.txt"));
-        boolean genFirstLine = true;
+
         while (genL2BrNL1.ready()) {
-          String genLine = posBr.readLine();
-          if (genFirstLine) {
-            genFirstLine = false;
+          String genLine = genL2BrNL1.readLine();
+          StopWatch stopWatch = new LoggingStopWatch();
+          String out = genL2.generatedL2(posline, genLine);
+          if (out != null) {
+            nl2Printwriter.println(out);
           }
-          nl2Printwriter.println(genL2.join(posline, genLine));
+          stopWatch.stop("nl2Printwriter line");
         }
         genL2BrNL1.close();
       }
