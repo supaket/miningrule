@@ -7,21 +7,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-/**
- * Hello world!
- * 
- */
+import org.perf4j.LoggingStopWatch;
+import org.perf4j.StopWatch;
+
 public class App {
 
   private static Map<String, PrintWriter> printWriterMap = new HashMap<String, PrintWriter>();
 
   public static void main(String[] args) {
-
     try {
 
       String cfile = args[0];
@@ -31,45 +29,53 @@ public class App {
 
       BufferedReader in = new BufferedReader(new FileReader(cfile));
 
+      ArrayList<PositiveA> txnLines = new ArrayList<PositiveA>();
+      boolean isFirstLine = true;
+      String headbf = "";
+
       while (in.ready()) {
-
-        String fline = in.readLine();
-        String[] freq = fline.split("\\s+");
-
-        if (freq.length > 1) {
-          printer.print(fline + "\t");
-          BufferedReader trxN = new BufferedReader(new FileReader(bfile));
-          while (trxN.ready()) {
-            String trxnLine = trxN.readLine();
-
-            boolean isFound = true;
-            for (int i = 0; i < freq.length - 1; i++) {
-              isFound &= isFreqFound(trxnLine, freq[i]);
-              if (!isFound) {
-                break;
-              }
-            }
-
-            if (isFound) {
-              printer.print("1");
-            } else {
-              printer.print("0");
-            }
-          }
-
-          printer.println();
-          trxN.close();
-        } else {
-          printer.println(fline);
+        if (isFirstLine) {
+          headbf = in.readLine();
+          isFirstLine &= false;
+          continue;
         }
+
+        PositiveA positveA = new PositiveA();
+        positveA.head = in.readLine();
+        positveA.freqs = positveA.head.split("\\s+");
+        //positveA.p = Pattern.compile("\\b(\\t)*" + record + "\\b(\\t)*");
+        txnLines.add(positveA);
       }
 
       in.close();
-      FindNegative findNeg = new FindNegative();
-      String positiveFileName = cfile + ".out";
+      printer.print(headbf);
+      List<String> trxnLines = new ArrayList<String>();
+      BufferedReader trxN = new BufferedReader(new FileReader(bfile));
+      while (trxN.ready()) {
+        trxnLines.add(trxN.readLine());
+      }
+      trxN.close();
+
+      StopWatch stop1 = new LoggingStopWatch("16xxxx lines");
+      for (PositiveA posA : txnLines) {
+        StringBuilder sb = new StringBuilder();
+        for (String line : trxnLines) {
+          if (isFreqItemFoundInTrxn(posA.freqs, line)) {
+            sb.append("1");
+          } else {
+            sb.append("0");
+          }
+        }
+        //BigInteger lineBit = new BigInteger(sb.toString(), 2);
+        //printer.println(lineBit.toString(Character.MAX_RADIX));
+      }
+      stop1.stop();
+      //FindNegative findNeg = new FindNegative();
+      //String positiveFileName = cfile + ".out";
 
       //Long run
-      findNeg.parsePositiveFile(positiveFileName);
+      //findNeg.parsePositiveFile(positiveFileName);
+      printer.close();
     } catch (FileNotFoundException e1) {
       e1.printStackTrace();
     } catch (UnsupportedEncodingException e1) {
@@ -77,6 +83,15 @@ public class App {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public static boolean isFreqItemFoundInTrxn(String[] freqs, String trxnLine) {
+    for (int i = 0; i < freqs.length; i++) {
+      if (!isFreqFound(trxnLine, freqs[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static PrintWriter getPrintWriter(String fileName) {
@@ -92,7 +107,11 @@ public class App {
   }
 
   private static boolean isFreqFound(String search, String record) {
-    Matcher matcher = Pattern.compile("\\b(\\t)*" + record + "\\b(\\t)*").matcher(search);
-    return matcher.find();
+    if (null != search && null != record) {
+      if (search.indexOf(record) > -1) {
+        return true;
+      }
+    }
+    return false;
   }
 }
