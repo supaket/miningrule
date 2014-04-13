@@ -14,7 +14,7 @@ public class GenerateL2Test {
     String nl1Case3 = "~(210 115) (168878)\t111111111111111111111111111111111111";
     String nl1Case4 = "~(212 214) (168878)\t111111111111111111111111111111111111";
 
-    GenerateL2 generateL2 = new GenerateL2();
+    GenerateL2_1 generateL2 = new GenerateL2_1();
     Assert.assertTrue(generateL2.isFound(inputP, nl1Case1));
     Assert.assertFalse(generateL2.isFound(inputP, nl1Case2));
     Assert.assertTrue(generateL2.isFound(inputP, nl1Case3));
@@ -39,7 +39,7 @@ public class GenerateL2Test {
     String resultNl1Case5 = "115 ~(212 214) (0)\t0000000000";
     String resultNl1Case6 = "115 ~(212 214) (0)\t0000000000";
 
-    GenerateL2 generateL2 = new GenerateL2();
+    GenerateL2_1 generateL2 = new GenerateL2_1();
 
     Assert.assertEquals(generateL2.join(inputP1, nl1Case1), resultNl1Case1);
     Assert.assertEquals(generateL2.join(inputP1, nl1Case2), resultNl1Case2);
@@ -68,7 +68,7 @@ public class GenerateL2Test {
     String rnl1Case5 = "115 ~(212 214) (3)\t1010100000";
     String rnl1Case6 = "115 ~(212 214) (2)\t0101000000";
 
-    GenerateL2 generateL2 = new GenerateL2();
+    GenerateL2_1 generateL2 = new GenerateL2_1();
     Assert.assertEquals(generateL2.join(inputP1, nl1Case1), rnl1Case1);
     Assert.assertEquals(generateL2.join(inputP1, nl1Case2), rnl1Case2);
     Assert.assertEquals(generateL2.join(inputP1, nl1Case3), rnl1Case3);
@@ -95,7 +95,7 @@ public class GenerateL2Test {
     String rnl1Case5 = "115 ~(212 214) (2)\t0000001010";
     String rnl1Case6 = "115 ~(212 214) (3)\t0000010101";
 
-    GenerateL2 generateL2 = new GenerateL2();
+    GenerateL2_1 generateL2 = new GenerateL2_1();
     Assert.assertEquals(generateL2.join(inputP1, nl1Case1), rnl1Case1);
     Assert.assertEquals(generateL2.join(inputP1, nl1Case2), rnl1Case2);
     Assert.assertEquals(generateL2.join(inputP1, nl1Case3), rnl1Case3);
@@ -122,7 +122,7 @@ public class GenerateL2Test {
     String rnl1Case5 = "115 ~(212 214) (5)\t1010101010";
     String rnl1Case6 = "115 ~(212 214) (5)\t0101010101";
     
-    GenerateL2 generateL2 = new GenerateL2();
+    GenerateL2_1 generateL2 = new GenerateL2_1();
     Assert.assertEquals(generateL2.join(inputP1, nl1Case1), rnl1Case1);
     Assert.assertEquals(generateL2.join(inputP1, nl1Case2), rnl1Case2);
     Assert.assertEquals(generateL2.join(inputP1, nl1Case3), rnl1Case3);
@@ -133,7 +133,7 @@ public class GenerateL2Test {
 
   @Test
   public void testAnBit() {
-    GenerateL2 gen2 = new GenerateL2();
+    GenerateL2_1 gen2 = new GenerateL2_1();
     String input1 = "11";
     String input2 = "00";
 
