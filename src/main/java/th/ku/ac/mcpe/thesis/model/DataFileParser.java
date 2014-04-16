@@ -12,28 +12,28 @@ import java.util.regex.Pattern;
 
 public class DataFileParser {
 
-  private int trxnCount;
-
-  private List<PositiveFreq> positiveLines;
+  private Long trxnCount;
+  private BigInteger bitLenght;
+  private List<PosFreq> positiveLines;
   private List<String> trxnLines;
 
   public DataFileParser() {
-    positiveLines = new ArrayList<PositiveFreq>();
+    positiveLines = new ArrayList<PosFreq>();
   }
 
-  public int getTrxnCount() {
+  public Long getTrxnCount() {
     return trxnCount;
   }
 
-  public void setTrxnCount(int trxnCount) {
+  public void setTrxnCount(Long trxnCount) {
     this.trxnCount = trxnCount;
   }
 
-  public List<PositiveFreq> getPositiveLines() {
+  public List<PosFreq> getPositiveLines() {
     return positiveLines;
   }
 
-  public void setPositiveLines(List<PositiveFreq> positiveLines) {
+  public void setPositiveLines(List<PosFreq> positiveLines) {
     this.positiveLines = positiveLines;
   }
 
@@ -44,10 +44,15 @@ public class DataFileParser {
       String line = in.readLine();
       if (isFirstLine) {
         isFirstLine &= false;
-        setTrxnCount(Integer.valueOf(line.replace('(', ' ').replace(')', ' ').trim()));
+        setTrxnCount(Long.valueOf(line.replace('(', ' ').replace(')', ' ').trim()));
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < getTrxnCount(); i++) {
+          sb.append('1');
+        }
+        setBitLenght(new BigInteger(sb.toString(), 2));
         continue;
       }
-      positiveLines.add(getPositiveFreq(line));
+      positiveLines.add(getPosFreq(line));
     }
     in.close();
   }
@@ -63,12 +68,13 @@ public class DataFileParser {
     this.trxnLines = trxnLines;
   }
 
-  private PositiveFreq getPositiveFreq(String line) {
-    PositiveFreq positveA = new PositiveFreq();
-    positveA.line = line;
-    positveA.freqs = positveA.line.split("\\s+");
-    positveA.patterns = getPatternList(positveA.freqs);
-    return positveA;
+  private PosFreq getPosFreq(String line) {
+    PosFreq pos = new PosFreq();
+    pos.setLine(line);
+    pos.setFreqs(pos.getLine().split("\\s+"));
+    pos.setSingleItem(pos.getFreqs().length == 2);
+    pos.setPatterns(getPatternList(pos.getFreqs()));
+    return pos;
   }
 
   private List<Pattern> getPatternList(String[] freqs) {
@@ -88,8 +94,8 @@ public class DataFileParser {
   }
 
   public void processNegativeL0() {
-    for (PositiveFreq posA : positiveLines) {
-      posA.setBit(new BigInteger(getBitLine(posA.patterns), 2));
+    for (PosFreq posA : positiveLines) {
+      posA.setBit(new BigInteger(getBitLine(posA.getPatterns()), 2));
     }
   }
 
@@ -110,11 +116,20 @@ public class DataFileParser {
     return true;
   }
 
+
+  public BigInteger getBitLenght() {
+    return bitLenght;
+  }
+
+  public void setBitLenght(BigInteger bitLenght) {
+    this.bitLenght = bitLenght;
+  }
+
   public void writeBit(String filePath) {
     try {
       File file = new File(filePath);
       PrintWriter pwr = new PrintWriter(file);
-      for (PositiveFreq posA : positiveLines) {
+      for (PosFreq posA : positiveLines) {
         pwr.println(posA.getBit().toString(2));
       }
       pwr.close();

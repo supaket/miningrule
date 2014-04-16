@@ -18,16 +18,16 @@ public class GeneratePositveTest {
     String s1 = "15622 228 228";
     String s2 = "142735    2305 2305";
     String s3 = "112507    1139    130670  131901  142612  171556  2290    250835";
-    Assert.assertFalse(g.isOnlyOneTypeInSingleLine(s1.split("\\s+")));
-    Assert.assertFalse(g.isOnlyOneTypeInSingleLine(s2.split("\\s+")));
-    Assert.assertFalse(g.isOnlyOneTypeInSingleLine(s3.split("\\s+")));
+    Assert.assertFalse(g.isNotMixed(s1.split("\\s+")));
+    Assert.assertFalse(g.isNotMixed(s2.split("\\s+")));
+    Assert.assertFalse(g.isNotMixed(s3.split("\\s+")));
 
     String s4 = "15622 1228";
     String s5 = "142735    12305";
     String s6 = "112507    1139    130670  131901  142612  171556  12290    1250835";
-    Assert.assertTrue(g.isOnlyOneTypeInSingleLine(s4.split("\\s+")));
-    Assert.assertTrue(g.isOnlyOneTypeInSingleLine(s5.split("\\s+")));
-    Assert.assertTrue(g.isOnlyOneTypeInSingleLine(s6.split("\\s+")));
+    Assert.assertTrue(g.isNotMixed(s4.split("\\s+")));
+    Assert.assertTrue(g.isNotMixed(s5.split("\\s+")));
+    Assert.assertTrue(g.isNotMixed(s6.split("\\s+")));
   }
 
   @Test
@@ -39,7 +39,7 @@ public class GeneratePositveTest {
       int lineCount = 0;
       while (in.ready()) {
         String line = in.readLine();
-        if (g.isOnlyOneTypeInSingleLine(line.split("\\s+"))) {
+        if (g.isNotMixed(line.split("\\s+"))) {
           lineCount++;
         }
       }

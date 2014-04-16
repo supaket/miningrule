@@ -1,5 +1,7 @@
 package th.ku.ac.mcpe.thesis;
 
+import java.math.BigInteger;
+
 import junit.framework.Assert;
 
 import org.testng.annotations.Test;
@@ -16,11 +18,20 @@ public class DataFileParserTest {
     dataFileParser.processNegativeL0();
     dataFileParser.writeBit("/Users/tomz/Thesis/dbtest/seqCno_sup001_1234.txt.test");
 
-    Assert.assertEquals(10, dataFileParser.getTrxnCount());
+    Assert.assertEquals(Long.valueOf(10), dataFileParser.getTrxnCount());
 
-    Assert.assertEquals(3, dataFileParser.getPositiveLines().get(0).bit.bitCount());
+    Assert.assertEquals(3, dataFileParser.getPositiveLines().get(0).getBit().bitCount());
 
     AssertHelper.sameContent("/Users/tomz/Thesis/dbtest/seqCno_sup001_1234.txt.test", "/Users/tomz/Thesis/dbtest/seqCno_sup001_1234.txt.expected");
 
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < 10; i++) {
+      sb.append('1');
+    }
+    BigInteger bigInt = new BigInteger(sb.toString(), 2);
+
+    Assert.assertEquals(bigInt, dataFileParser.getBitLenght());
+
   }
+
 }

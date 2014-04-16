@@ -21,11 +21,17 @@
 			<artifactId>perf4j</artifactId>
 			<version>0.9.16</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.9</version>
 		</dependency>
+		<!-- apache common -->
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.3.2</version>
+
 		<!-- Spark dependency -->
 		<dependency>
 			<groupId>org.apache.spark</groupId>
@@ -33,10 +39,24 @@
 			<version>0.9.1</version>
 		</dependency>
 
+		<!-- fast string search -->
+		<dependency>
+			<groupId>com.eaio.stringsearch</groupId>
+			<artifactId>stringsearch</artifactId>
+			<version>2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>6.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert</artifactId>
+			<version>1.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -79,6 +99,10 @@
 		<repository>
 			<id>Akka repository</id>
 			<url>http://repo.akka.io/releases</url>
+		</repository>
+		<repository>
+			<id>eaio.com</id>
+			<url>http://eaio.com/maven2</url>
 		</repository>
 	</repositories>
 </project>

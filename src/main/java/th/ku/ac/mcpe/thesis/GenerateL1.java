@@ -1,56 +1,53 @@
 package th.ku.ac.mcpe.thesis;
 
-import java.util.ArrayList;
+import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.perf4j.LoggingStopWatch;
-import org.perf4j.StopWatch;
-
+import th.ku.ac.mcpe.thesis.model.DataFileParser;
 import th.ku.ac.mcpe.thesis.model.NegativeL;
 import th.ku.ac.mcpe.thesis.model.NegativeL.NEG_TYPE;
-import th.ku.ac.mcpe.thesis.model.PositiveFreq;
+import th.ku.ac.mcpe.thesis.model.PosFreq;
 
 public class GenerateL1 {
 
   public Pattern nPattern = Pattern.compile("^(\\d+) +(\\((\\d+)\\))$");
   public Pattern nsPattern = Pattern.compile("^((\\d+ ){2,})\\((\\d+)\\)$");
 
-  public void parsePositiveFile(Long trxCount, ArrayList<PositiveFreq> positiveLines) {
-    int countN = 0;
-    int countNS = 0;
-    StopWatch st = new LoggingStopWatch();
-    for (PositiveFreq positiveLine : positiveLines) {
-      String line = positiveLine.line;
-      Matcher m = isFound(nPattern, line);
-      if (null != m) {
-        countN++;
-        NegativeL negL1 = new NegativeL();
-        negL1.level = 1;
-        negL1.type = NEG_TYPE.n;
-        negL1.line = ("~" + m.group(1)) + " " + "(" + String.valueOf(trxCount - Integer.valueOf(m.group(3))) + ")";
-        negL1.is1 = (m.group(1).charAt(0) == '1');
-        negL1.bit.add(positiveLine.bit.negate());
-        positiveLine.negative = negL1;
+  public void genL1(DataFileParser dataFile) {
+    for (PosFreq positiveLine : dataFile.getPositiveLines()) {
+      if (positiveLine.isSingleItem()) {
+        positiveLine.setNegative(getNegativeSingleItem(dataFile, positiveLine));
       } else {
-        if (isOnlyOneTypeInSingleLine(positiveLine.freqs)) {
-          countNS++;
-          Matcher nslMatcher = isFound(nsPattern, line);
-          if (null != nslMatcher) {
-            String s = "~(" + nslMatcher.group(1).trim() + ")";
-            s += " ";
-            s += "(" + String.valueOf(trxCount - Integer.valueOf(nslMatcher.group(3))) + ")";
-            NegativeL negsL1 = new NegativeL();
-            negsL1.line = s;
-            negsL1.level = 1;
-            negsL1.type = NEG_TYPE.ns;
-            negsL1.bit.add(positiveLine.bit.negate());
-            positiveLine.negative = negsL1;
-          }
+        if (isNotMixed(positiveLine.getFreqs())) {
+          positiveLine.setNegative(getNegativeSet(dataFile, positiveLine));
         }
       }
     }
-    st.stop("finish n count (" + countN + "), ns count(" + countNS + ")");
+  }
+
+  private NegativeL getNegativeSet(DataFileParser dataFile, PosFreq positiveLine) {
+    Matcher nslMatcher = isFound(nsPattern, positiveLine.getLine());
+    String nline = "~(" + nslMatcher.group(1).trim() + ")" + " (" + String.valueOf(dataFile.getTrxnCount() - Integer.valueOf(nslMatcher.group(3))) + ")";
+    boolean isClassSet = nslMatcher.group(1).trim().charAt(0) == '1';
+    return getNegativeL(1, NEG_TYPE.ns, positiveLine.getBit().xor(dataFile.getBitLenght()), nline, isClassSet);
+  }
+
+  private NegativeL getNegativeSingleItem(DataFileParser dataFile, PosFreq positiveLine) {
+    Matcher matcher = isFound(nPattern, positiveLine.getLine());
+    String line = ("~" + matcher.group(1)) + " " + "(" + String.valueOf(dataFile.getTrxnCount() - Integer.valueOf(matcher.group(3))) + ")";
+    boolean isClass = (matcher.group(1).charAt(0) == '1');
+    return getNegativeL(1, NEG_TYPE.n, positiveLine.getBit().xor(dataFile.getBitLenght()), line, isClass);
+  }
+
+  private NegativeL getNegativeL(int level, NEG_TYPE type, BigInteger bit, String line, boolean isClass) {
+    NegativeL nl = new NegativeL();
+    nl.level = level;
+    nl.type = type;
+    nl.line = line;
+    nl.isClass = isClass;
+    nl.bit = bit;
+    return nl;
   }
 
   public Matcher isFound(Pattern p, String line) {
@@ -61,7 +58,7 @@ public class GenerateL1 {
     return null;
   }
 
-  public boolean isOnlyOneTypeInSingleLine(String[] freqs) {
+  public boolean isNotMixed(String[] freqs) {
     boolean isFirstLine = true;
     char c = ' ';
     for (int i = 0; i < freqs.length - 1; i++) {
