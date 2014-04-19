@@ -27,30 +27,31 @@ public class GenerateL1 {
   }
 
   private NegativeL getNegativeSet(DataFileParser dataFile, PosFreq positiveLine) {
-    Matcher nslMatcher = isFound(nsPattern, positiveLine.getLine());
-    String nline = "~(" + nslMatcher.group(1).trim() + ")" + " (" + String.valueOf(dataFile.getTrxnCount() - Integer.valueOf(nslMatcher.group(3))) + ")";
-    boolean isClassSet = nslMatcher.group(1).trim().charAt(0) == '1';
-    return getNegativeL(1, NEG_TYPE.ns, positiveLine.getBit().xor(dataFile.getBitLenght()), nline, isClassSet);
+    Matcher nslMatcher = getMatcher(nsPattern, positiveLine.getLine());
+    if (nslMatcher != null) {
+      String nline = "~(" + nslMatcher.group(1).trim() + ")" + " (" + getSuppCount(dataFile, nslMatcher) + ")";
+      boolean isClassSet = nslMatcher.group(1).trim().charAt(0) == '1';
+      return getNegativeL(1, NEG_TYPE.ns, positiveLine.getBit().xor(dataFile.getBitLenght()), nline, isClassSet);
+    }
+    throw new RuntimeException("data exception");
   }
 
-  private NegativeL getNegativeSingleItem(DataFileParser dataFile, PosFreq positiveLine) {
-    Matcher matcher = isFound(nPattern, positiveLine.getLine());
-    String line = ("~" + matcher.group(1)) + " " + "(" + String.valueOf(dataFile.getTrxnCount() - Integer.valueOf(matcher.group(3))) + ")";
+  private NegativeL getNegativeSingleItem(DataFileParser df, PosFreq positiveLine) {
+    Matcher matcher = getMatcher(nPattern, positiveLine.getLine());
+    String line = ("~" + matcher.group(1)) + " " + "(" + getSuppCount(df, matcher) + ")";
     boolean isClass = (matcher.group(1).charAt(0) == '1');
-    return getNegativeL(1, NEG_TYPE.n, positiveLine.getBit().xor(dataFile.getBitLenght()), line, isClass);
+    return getNegativeL(1, NEG_TYPE.n, positiveLine.getBit().xor(df.getBitLenght()), line, isClass);
+  }
+
+  private String getSuppCount(DataFileParser df, Matcher matcher) {
+    return String.valueOf(df.getTrxnCount() - Integer.valueOf(matcher.group(3)));
   }
 
   private NegativeL getNegativeL(int level, NEG_TYPE type, BigInteger bit, String line, boolean isClass) {
-    NegativeL nl = new NegativeL();
-    nl.level = level;
-    nl.type = type;
-    nl.line = line;
-    nl.isClass = isClass;
-    nl.bit = bit;
-    return nl;
+    return new NegativeL(type, level, line, bit, isClass);
   }
 
-  public Matcher isFound(Pattern p, String line) {
+  public Matcher getMatcher(Pattern p, String line) {
     Matcher matcher = p.matcher(line);
     if (matcher.find()) {
       return matcher;

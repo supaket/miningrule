@@ -68,13 +68,13 @@ public class GeneratePositveTest {
     String s3 = "212 (404)";
 
     GenerateL1 g = new GenerateL1();
-    Assert.assertNotNull(g.isFound(g.nPattern, s1));
-    Assert.assertNotNull(g.isFound(g.nPattern, s2));
-    Assert.assertNotNull(g.isFound(g.nPattern, s3));
+    Assert.assertNotNull(g.getMatcher(g.nPattern, s1));
+    Assert.assertNotNull(g.getMatcher(g.nPattern, s2));
+    Assert.assertNotNull(g.getMatcher(g.nPattern, s3));
 
-    Assert.assertNull(g.isFound(g.nsPattern, s1));
-    Assert.assertNull(g.isFound(g.nsPattern, s2));
-    Assert.assertNull(g.isFound(g.nsPattern, s3));
+    Assert.assertNull(g.getMatcher(g.nsPattern, s1));
+    Assert.assertNull(g.getMatcher(g.nsPattern, s2));
+    Assert.assertNull(g.getMatcher(g.nsPattern, s3));
   }
 
   @Test
@@ -86,17 +86,17 @@ public class GeneratePositveTest {
     String s5 = "2238 250262 (173)";
 
     GenerateL1 g = new GenerateL1();
-    Assert.assertNotNull(g.isFound(g.nsPattern, s1));
-    Assert.assertNotNull(g.isFound(g.nsPattern, s2));
-    Assert.assertNotNull(g.isFound(g.nsPattern, s3));
-    Assert.assertNotNull(g.isFound(g.nsPattern, s4));
-    Assert.assertNotNull(g.isFound(g.nsPattern, s5));
+    Assert.assertNotNull(g.getMatcher(g.nsPattern, s1));
+    Assert.assertNotNull(g.getMatcher(g.nsPattern, s2));
+    Assert.assertNotNull(g.getMatcher(g.nsPattern, s3));
+    Assert.assertNotNull(g.getMatcher(g.nsPattern, s4));
+    Assert.assertNotNull(g.getMatcher(g.nsPattern, s5));
 
-    Assert.assertNull(g.isFound(g.nPattern, s1));
-    Assert.assertNull(g.isFound(g.nPattern, s2));
-    Assert.assertNull(g.isFound(g.nPattern, s3));
-    Assert.assertNull(g.isFound(g.nPattern, s2));
-    Assert.assertNull(g.isFound(g.nPattern, s3));
+    Assert.assertNull(g.getMatcher(g.nPattern, s1));
+    Assert.assertNull(g.getMatcher(g.nPattern, s2));
+    Assert.assertNull(g.getMatcher(g.nPattern, s3));
+    Assert.assertNull(g.getMatcher(g.nPattern, s2));
+    Assert.assertNull(g.getMatcher(g.nPattern, s3));
   }
 
 }

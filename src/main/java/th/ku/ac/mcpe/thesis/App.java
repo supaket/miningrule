@@ -13,7 +13,6 @@ public class App {
 
   public static void main(String[] args) {
     try {
-
       StopWatch st = new LoggingStopWatch();
       DataFileParser dataFileParser = new DataFileParser();
       dataFileParser.parseFreqFile(args[0]);

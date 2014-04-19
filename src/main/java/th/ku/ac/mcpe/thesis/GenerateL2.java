@@ -11,10 +11,10 @@ import th.ku.ac.mcpe.thesis.model.PosFreq;
 
 public class GenerateL2 {
 
-  public void genL2(DataFileParser dataFile) {
-    for (PosFreq positiveLineFreq1 : dataFile.getPositiveLines()) {
+  public void genL2(DataFileParser df) {
+    for (PosFreq positiveLineFreq1 : df.getPositiveLines()) {
       if (isPostiveItem(positiveLineFreq1.getNegative())) {
-        findPostiveNextLevel(dataFile.getPositiveLines(), positiveLineFreq1);
+        findPostiveNextLevel(df.getPositiveLines(), positiveLineFreq1);
       }
     }
   }
