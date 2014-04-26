@@ -12,6 +12,7 @@ public class DataFileParserTest {
 
   @Test
   public void testFreqFileParser() throws Exception {
+
     DataFileParser dataFileParser = new DataFileParser();
     dataFileParser.parseFreqFile("/Users/tomz/Thesis/dbtest/seqCno_sup001_1234.txt");
     dataFileParser.parseTrxnLines("/Users/tomz/Thesis/dbtest/seqCno1234.txt");
@@ -24,14 +25,18 @@ public class DataFileParserTest {
 
     AssertHelper.sameContent("/Users/tomz/Thesis/dbtest/seqCno_sup001_1234.txt.test", "/Users/tomz/Thesis/dbtest/seqCno_sup001_1234.txt.expected");
 
+    Assert.assertEquals(getBigInt10Bit(), dataFileParser.getBitLenght());
+
+  }
+
+  
+  private BigInteger getBigInt10Bit() {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < 10; i++) {
       sb.append('1');
     }
     BigInteger bigInt = new BigInteger(sb.toString(), 2);
-
-    Assert.assertEquals(bigInt, dataFileParser.getBitLenght());
-
+    return bigInt;
   }
 
 }
