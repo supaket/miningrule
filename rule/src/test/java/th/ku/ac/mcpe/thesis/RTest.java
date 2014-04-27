@@ -29,4 +29,5 @@ public class RTest {
     R expR = new R(null, "115", 1234, null);
     Assert.assertEquals(r, expR);
   }
+  
 }

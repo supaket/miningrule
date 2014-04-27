@@ -47,9 +47,21 @@ public class R {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
+    sb.append("C[");
     sb.append(c.toString());
+    sb.append("]");
     sb.append(",");
+    sb.append("F[");
     sb.append(f.toString());
+    sb.append("]");
+    sb.append(",");
+    sb.append("S[");
+    sb.append(s.toString());
+    sb.append("]");
+    sb.append(",");
+    sb.append("T[");
+    sb.append(t.toString());
+    sb.append("]");
     return sb.toString();
   }
 }
