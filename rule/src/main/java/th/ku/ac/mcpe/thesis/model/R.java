@@ -1,12 +1,14 @@
 package th.ku.ac.mcpe.thesis.model;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 public class R {
 
-  public Set<C> c = new HashSet<C>();
-  public Set<F> f = new HashSet<F>();
+  public Collection<C> c = new ArrayList<C>();
+
+  public Collection<F> f = new ArrayList<F>();
 
   public S s;
   public T t;
@@ -21,15 +23,15 @@ public class R {
 
   public R(C c, F f, S s, T t) {
     super();
-    this.c.add(c);
-    this.f.add(f);
+    if (c != null) this.c.add(c);
+    if (f != null) this.f.add(f);
     this.s = s;
     this.t = t;
   }
 
   public R(String c, String f, int i, T t) {
-    this.c.add(new C(c));
-    this.f.add(new F(f));
+    if (c != null) this.c.add(new C(c));
+    if (f != null) this.f.add(new F(f));
     this.s = new S(i);
     this.t = t;
   }
@@ -40,5 +42,14 @@ public class R {
       return ((R) obj).c.equals(c) && ((R) obj).f.equals(f);
     }
     return false;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(c.toString());
+    sb.append(",");
+    sb.append(f.toString());
+    return sb.toString();
   }
 }
