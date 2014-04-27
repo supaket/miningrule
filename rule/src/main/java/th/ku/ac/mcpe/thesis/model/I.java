@@ -5,7 +5,8 @@ import java.util.Collection;
 
 public class I {
 
-  private Collection<String> i = new ArrayList<String>();
+  public Collection<String> i = new ArrayList<String>();
+  public Type type;
 
   public I(String i) {
     if (null != i) {
