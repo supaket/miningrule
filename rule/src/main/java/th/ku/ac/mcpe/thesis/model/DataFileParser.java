@@ -85,8 +85,8 @@ public class DataFileParser {
   }
 
   public void processNegativeL0() {
-    for (PositiveWrapper posA : positiveLines) {
-      posA.setBit(new BigInteger(getBitLine(posA.getPatterns()), 2));
+    for (PositiveWrapper pos : positiveLines) {
+      pos.setBit(new BigInteger(getBitLine(pos.getPatterns()), 2));
     }
   }
 

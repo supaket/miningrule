@@ -1,42 +1,42 @@
 package th.ku.ac.mcpe.thesis.model;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Collection;
 import java.util.Set;
 
 public class R {
 
-  public Collection<C> c = new ArrayList<C>();
+  public Collection<C> c = new LinkedList<C>();
 
-  public Collection<F> f = new ArrayList<F>();
+  public Collection<F> f = new LinkedList<F>();
 
   public S s;
-  public T t;
+  public L t;
 
   public R() {}
 
-  public R(Set<C> c, Set<F> f, S s, T t) {
+  public R(Set<C> c, Set<F> f, S s, L t) {
     this.c = c;
     this.f = f;
     this.s = s;
     this.t = t;
   }
 
-  public R(C c, F f, S s, T t) {
+  public R(C c, F f, S s, L t) {
     if (c != null) this.c.add(c);
     if (f != null) this.f.add(f);
     this.s = s;
     this.t = t;
   }
 
-  public R(String c, String f, S s, T t) {
+  public R(String c, String f, S s, L t) {
     if (c != null) this.c.add(new C(c));
     if (f != null) this.f.add(new F(f));
     this.s = s;
     this.t = t;
   }
 
-  public R(String c, String f, int s, T t) {
+  public R(String c, String f, int s, L t) {
     this(c, f, new S(s), t);
   }
 

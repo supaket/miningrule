@@ -56,7 +56,7 @@ public class RTest {
     C c = new C("115");
     S s = new S(1234);
     R r = new R(c, null, s, null);
-    c.i.add("118");
+    c.val.add("118");
     R expr = new R("115 118", null, s, null);
     Assert.assertEquals(expr, r);
   }
@@ -67,7 +67,7 @@ public class RTest {
     F f = new F("215");
     S s = new S(1234);
     R r = new R(c, f, s, null);
-    c.i.add("118");
+    c.val.add("118");
     R expr = new R("115 118", "215", s, null);
     Assert.assertEquals(expr, r);
   }
