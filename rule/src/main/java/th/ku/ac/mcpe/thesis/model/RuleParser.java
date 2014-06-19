@@ -14,28 +14,31 @@ public class RuleParser {
 
     private static Long trxnCount;
     private static BigInteger bitLenght;
-    private static Map<Integer, List<I>> piTab = new HashMap<Integer, List<I>>();
+
+    private static Map<Integer, List<I>> piMap = new HashMap<Integer, List<I>>();
+    private static List<I> piTab = new ArrayList<I>();
 
     public static void main(String[] args) {
         try {
 
             StopWatch st1 = new LoggingStopWatch();
+
             StopWatch st = new LoggingStopWatch();
 
             RuleParser parser = new RuleParser();
+
             st1.start("rule P1[start].");
 
             List<I> rules = parser.parse(args[0]);
 
-            createPiTab(createP1Tab(rules));
-
-            List<String> trxnLines = parseTrxnLines(args[1]);
+            List<String> trxLines = parseTrxnLines(args[1]);
 
             for (I rule : rules) {
+
                 StringBuffer sb = new StringBuffer();
 
                 st.start("processing rule i[" + rule.val + "[" + rule.type + "]" + "][start].");
-                for (String line : trxnLines) {
+                for (String line : trxLines) {
                     sb.append(isFreqItemFoundInTrxn(rule.patterns, line) ? "1" : "0");
                 }
                 st.stop("processing rule i[" + rule.val + "[" + rule.type + "]" + "][done].");
@@ -60,7 +63,7 @@ public class RuleParser {
                     if (ruleR.type == Type.n || ruleR.type == Type.ns) {
                         if (!(ruleL instanceof C && ruleR instanceof C)) {
 
-                            L l2 = new L(ruleL.val);
+                            l2 = new L(ruleL.val);
                             l2.addVal(ruleR.val);
                             l2.bit = ruleL.bit.and(ruleR.bit);
 
@@ -79,29 +82,37 @@ public class RuleParser {
             st1.start("rule Li[start].");
             int startFrom = 3;
             // cross join
+
             int i = startFrom;
             st1.stop("rule Li[done].");
-            List<List<I>> ruleL = new ArrayList<List<I>>();
-            ruleL.add(getPi(i));
-            ruleL.add(l2Coll);
-            ruleL.add(n2Coll);
 
+            // Join Pi, Li, Ni with P1, N1
+            // where i start from 3,4,5...n
+            level2 = join(getPi(2), getNi(1));
+            l2Coll n2Coll // == starting with P2, L2, N2
+
+            List<List<I>> ruleR = new ArrayList<List<I>>();
+            //TODO: Create Rule R ( P1, N1 )
+
+            //TODO: Implement cross join here
+            for (List<I> ruleL : ruleL) {
+
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        ;
+        } ;
     }
 
-    private static void createPiTab(HashMap<String, I> p1Tab) {
-
+    private static void createPiTab(Integer level, HashMap<String, I> p1Tab) {
+        piTab.put(level, p1Tab);
     }
 
     private static List<I> getPi(Integer level) {
         return piTab.get(level);
     }
 
-    private static HashMap<String, I> createP1Tab(List<I> rules) {
+    private static HashMap<String, I> createP1Map(List<I> rules) {
         HashMap<String, I> tab = new HashMap<String, I>();
         for (I rule : rules) {
             String s = ((String) (new ArrayList<String>(rule.val)).get(0));
