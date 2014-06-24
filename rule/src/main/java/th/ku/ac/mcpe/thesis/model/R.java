@@ -1,82 +1,133 @@
 package th.ku.ac.mcpe.thesis.model;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
-import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 public class R {
 
-  public Collection<C> c = new LinkedList<C>();
+    public List<C> pClass    = new LinkedList<>();
+    public List<F> pFeature  = new LinkedList<>();
+    public List<C> psClass   = new LinkedList<>();
+    public List<F> psFeature = new LinkedList<>();
 
-  public Collection<F> f = new LinkedList<F>();
+    public List<C> nClass    = new LinkedList<>();
+    public List<F> nFeature  = new LinkedList<>();
+    public List<C> nsClass   = new LinkedList<>();
+    public List<F> nsFeature = new LinkedList<>();
 
-  public S s;
-  public L t;
+    public R(String s) {
 
-  public R() {}
+        java.util.List<String> items = getItems(s);
 
-  public R(Set<C> c, Set<F> f, S s, L t) {
-    this.c = c;
-    this.f = f;
-    this.s = s;
-    this.t = t;
-  }
+        String item = items.get(0);
 
-  public R(C c, F f, S s, L t) {
-    if (c != null) this.c.add(c);
-    if (f != null) this.f.add(f);
-    this.s = s;
-    this.t = t;
-  }
+        if (isFirstLevel(items)) {
+            if (item.startsWith("1")) {
+                //115 (704)
+                pClass.add(getItem(C.class, I.Type.p, item));
+                nClass.add(getItem(C.class, I.Type.n, item));
+            } else {
+                //210 (292)
+                pFeature.add(getItem(F.class, I.Type.p, item));
+                nFeature.add(getItem(F.class, I.Type.n, item));
+            }
+        } else {
 
-  public R(String c, String f, S s, L t) {
-    if (c != null) this.c.add(new C(c));
-    if (f != null) this.f.add(new F(f));
-    this.s = s;
-    this.t = t;
-  }
+            String CLASS_ALPHA = "1";
+            String FEATURE_ALPHA = "2";
 
-  public R(String c, String f, int s, L t) {
-    this(c, f, new S(s), t);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof R) {
-      R r = ((R) obj);
-      return eq(r.c, c) && eq(r.f, f) && eq(r.s, s) && eq(r.t, t);
+            if (isNotMixed(items, CLASS_ALPHA)) {
+                // 15737 15839 (215)
+                psClass.add(getItem(C.class, I.Type.ps, items));
+                nsClass.add(getItem(C.class, I.Type.ns, items));
+            } else if (isNotMixed(items, FEATURE_ALPHA)) {
+                // 2232 250268 (242)
+                psFeature.add(getItem(F.class, I.Type.ps, items));
+                nsFeature.add(getItem(F.class, I.Type.ns, items));
+            } else {
+                // mixed we don't use this value
+                // If positive class and feature
+                // 2843 2844 15618 15737 250975 (434)
+                // 278 15743 116021 170469 250857 250999 (233)
+            }
+        }
     }
-    return false;
-  }
 
-  private boolean eq(Object o1, Object o2) {
-    if (o1 == o2) {
-      return true;
+    private java.util.List<String> getItems(final String s) {
+        String[] split = s.split("\\s+");
+        List<String> items = java.util.Arrays.asList(split).subList(0, split.length - 1);
+        return new java.util.ArrayList<>(items);
     }
-    if (o1 != null) {
-      return o1.equals(o2);
-    }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("C[");
-    sb.append(String.valueOf(c));
-    sb.append("]");
-    sb.append(",");
-    sb.append("F[");
-    sb.append(String.valueOf(f));
-    sb.append("]");
-    sb.append(",");
-    sb.append("S[");
-    sb.append(String.valueOf(s));
-    sb.append("]");
-    sb.append(",");
-    sb.append("T[");
-    sb.append(String.valueOf(t));
-    sb.append("]");
-    return sb.toString();
-  }
+    public boolean isNotMixed(List<String> items, String startWith) {
+        for (String item : items) {
+            if (!item.startsWith(startWith)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private <T extends I> T getItem(Class<T> cls, I.Type type, String val) {
+        try {
+            T i = cls.getDeclaredConstructor(I.Type.class, String.class).newInstance(type, val);
+            return i;
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private <T extends I> T getItem(Class<T> cls, I.Type type, List<String> val) {
+        try {
+            T i = cls.getDeclaredConstructor(I.Type.class, List.class).newInstance(type, val);
+            return i;
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private boolean isFirstLevel(List<String> items) {
+        return items.size() < 2;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof R) {
+            R r = ((R) obj);
+            return eq(r.pClass, pClass) && eq(r.pFeature, pFeature);
+        }
+        return false;
+    }
+
+    private boolean eq(Object o1, Object o2) {
+        if (o1 == o2) {
+            return true;
+        }
+        if (o1 != null) {
+            return o1.equals(o2);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("C[");
+        sb.append(String.valueOf(pClass));
+        sb.append("]");
+        sb.append(",");
+        sb.append("F[");
+        sb.append(String.valueOf(pFeature));
+        sb.append("]");
+        return sb.toString();
+    }
 }

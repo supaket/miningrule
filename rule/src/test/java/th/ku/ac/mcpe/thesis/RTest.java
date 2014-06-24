@@ -1,75 +1,66 @@
 package th.ku.ac.mcpe.thesis;
 
-import junit.framework.Assert;
+import org.testng.*;
+import org.testng.annotations.*;
+import th.ku.ac.mcpe.thesis.model.*;
 
-import org.testng.annotations.Test;
-
-import th.ku.ac.mcpe.thesis.model.C;
-import th.ku.ac.mcpe.thesis.model.F;
-import th.ku.ac.mcpe.thesis.model.R;
-import th.ku.ac.mcpe.thesis.model.S;
-
+/**
+ * Created by tomz on 6/22/2014 AD.
+ */
 public class RTest {
 
-  @Test
-  public void testCreatePositiveClassNoFeatureRule() {
-    C c = new C("115");
-    S s = new S(1234);
-    R r = new R(c, null, s, null);
-    R expR = new R("115", null, 1234, null);
+    @Test
+    public void newRule_C1p0ps1n0ns_expectRule() {
+        String inputC1P0PS0N0NS = "100 (1)";
+        R r = new R(inputC1P0PS0N0NS);
+        Assert.assertNotNull(r);
+        Assert.assertEquals(r.pClass.size(), 1);
+        Assert.assertEquals(r.nClass.size(), 1);
 
-    Assert.assertEquals(expR, r);
+        Assert.assertEquals(r.pClass.get(0).level, 1);
+        Assert.assertEquals(r.nClass.get(0).level, 1);
+    }
 
-    r = new R();
-    Assert.assertNotSame(expR, r);
+    @Test
+    public void newRule_C0p1ps1n0ns_expectRule() {
+        String inputC1P0PS0N0NS = "15737 15839 (215)";
+        R r = new R(inputC1P0PS0N0NS);
+        Assert.assertNotNull(r);
 
-  }
+        Assert.assertEquals(r.pClass.size(), 0);
+        Assert.assertEquals(r.psClass.size(), 1);
+        Assert.assertEquals(r.nsClass.size(), 1);
 
-  @Test
-  public void testCreatePositiveFeatureNoClassRule() {
-    F f = new F("115");
-    S s = new S(1234);
-    R r = new R(null, f, s, null);
-    R expR = new R(null, "115", 1234, null);
-    Assert.assertEquals(expR, r);
+        Assert.assertEquals(r.psClass.get(0).level, 2);
+        Assert.assertEquals(r.nsClass.get(0).level, 1);
+    }
 
-    r = new R();
-    Assert.assertNotSame(expR, r);
-  }
+    @Test
+    public void newRule_F1p0ps1n0ns_expectRule() {
+        String inputF1p0ps1n0ns = "2232 (242)";
+        R r = new R(inputF1p0ps1n0ns);
+        Assert.assertNotNull(r);
 
-  @Test
-  public void testCreatePostiveClassAndFeatureRule() {
-    C c = new C("115");
-    F f = new F("215");
-    S s = new S(1234);
-    R r = new R(c, f, s, null);
-    R expr = new R("115", "215", s, null);
+        Assert.assertEquals(r.pFeature.size(), 1);
+        Assert.assertEquals(r.nFeature.size(), 1);
 
-    Assert.assertEquals(expr, r);
+        Assert.assertEquals(r.pFeature.get(0).level, 1);
+        Assert.assertEquals(r.nFeature.get(0).level, 1);
 
-    r = new R(c, f, null, null);
-    Assert.assertNotSame(expr, r);
-  }
+    }
 
-  @Test
-  public void testCreate2ClassWith0Feature() {
-    C c = new C("115");
-    S s = new S(1234);
-    R r = new R(c, null, s, null);
-    c.val.add("118");
-    R expr = new R("115 118", null, s, null);
-    Assert.assertEquals(expr, r);
-  }
+    @Test
+    public void newRule_C0p0ps1n1ns_expectRule() {
+        String inputC0p0ps1n1ns = "2232 250268 (242)";
 
-  @Test
-  public void testCreate2ClassWith1Feature() {
-    C c = new C("115");
-    F f = new F("215");
-    S s = new S(1234);
-    R r = new R(c, f, s, null);
-    c.val.add("118");
-    R expr = new R("115 118", "215", s, null);
-    Assert.assertEquals(expr, r);
-  }
+        R r = new R(inputC0p0ps1n1ns);
+        Assert.assertNotNull(r);
 
+        Assert.assertEquals(r.psFeature.size(), 1);
+        Assert.assertEquals(r.nsFeature.size(), 1);
+
+        Assert.assertEquals(r.psFeature.get(0).level, 2);
+        Assert.assertEquals(r.nsFeature.get(0).level, 1);
+
+    }
 }

@@ -4,11 +4,16 @@ import java.util.List;
 
 
 public class F extends I {
-  public F(List<String> sList) {
-    super(sList);
-  }
 
-  public F(String i) {
-    super(i);
-  }
+    public F(Type type, String value) {
+        super(type, value);
+    }
+
+    public F(Type type, List<String> values) {
+        super(type, values);
+    }
+
+    public F(String i) {
+        super(i);
+    }
 }
