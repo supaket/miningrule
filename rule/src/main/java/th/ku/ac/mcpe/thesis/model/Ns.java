@@ -3,5 +3,5 @@ package th.ku.ac.mcpe.thesis.model;
 /**
  * Created by tomz on 6/25/2014 AD.
  */
-public class Ns extends Capsule {
+public class Ns extends Tube {
 }

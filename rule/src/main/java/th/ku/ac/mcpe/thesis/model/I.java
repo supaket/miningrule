@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
 
 public class I {
 
-    public Type type;
-
     public BigInteger bit;
     public List<String>  values   = new ArrayList<>();
     public List<Pattern> patterns = new ArrayList<>();
@@ -22,33 +20,10 @@ public class I {
         return patterns;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (getClass().isInstance(obj)) {
-            if (((I) obj).values.size() == values.size()) {
-                return ((I) obj).values.containsAll(values);
-            }
-        }
-        if (obj instanceof String) {
-            return values.equals(new I((String) obj));
-        }
-        return false;
-    }
-
 
     @Override
     public String toString() {
         return values.toString();
-    }
-
-    public I(Type type, String value) {
-        this(value);
-        this.type = type;
-    }
-
-    public I(List<String> values) {
-        this.values = values;
-        patterns = getPattern(this.values);
     }
 
     public I(String value) {
