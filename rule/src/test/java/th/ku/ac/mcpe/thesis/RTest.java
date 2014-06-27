@@ -13,7 +13,7 @@ public class RTest {
     @Test
     public void createRule_SimplePositiveString_expectPositiveRule() {
 
-        final R expectedRule = new R("1111");
+        final R expectedRule = new R("1111", null, null);
 
         Assert.assertNotNull(expectedRule);
 

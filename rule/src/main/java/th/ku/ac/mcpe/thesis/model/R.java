@@ -1,17 +1,19 @@
 package th.ku.ac.mcpe.thesis.model;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class R {
 
-    private String classAlpha   = "1";
-    private String featureAlpha = "2";
+    public Type       type;
+    public int        level;
+    public BigInteger bit;
 
-    public Type type;
-    public int  level;
-    public List<I> values = new LinkedList<>();
+    private String  classAlpha   = "1";
+    private String  featureAlpha = "2";
+    public  List<I> values       = new LinkedList<>();
 
     public String getRaw() {
         final StringBuffer sb = new StringBuffer();
@@ -26,7 +28,7 @@ public class R {
 
     public R negative() {
         if (isItemsNotMixed()) {
-            R negRule = new R(getRaw());
+            R negRule = new R(getRaw(), null, null);
             negRule.type = getNegType();
             return negRule;
         }
@@ -44,16 +46,25 @@ public class R {
         }
     }
 
-    public R(String i) {
+    public R(String i, final List<String> transLines, final BigInteger xorBit) {
+        if (bit == null) {
+            bit = xorBit.xor(xorBit);
+        }
+
         type = getType(i);
+
         switch (type) {
             case n:
             case p:
                 level = 1;
                 if (isClass(i)) {
-                    values.add(new C(i));
+                    C r = new C(i, transLines, xorBit);
+                    bit = bit.and(r.bit);
+                    values.add(r);
                 } else {
-                    values.add(new F(i));
+                    F r = new F(i, transLines, xorBit);
+                    bit = bit.and(r.bit);
+                    values.add(r);
                 }
                 break;
             case ns:
@@ -63,9 +74,13 @@ public class R {
                     String[] items = i.split("\\s+");
                     for (String item : items) {
                         if (isClass(item)) {
-                            values.add(new C(item));
+                            C r = new C(item, transLines, xorBit);
+                            bit = bit.and(r.bit);
+                            values.add(r);
                         } else {
-                            values.add(new F(item));
+                            F r = new F(item, transLines, xorBit);
+                            bit = bit.and(r.bit);
+                            values.add(r);
                         }
                     }
                     level = items.length;
