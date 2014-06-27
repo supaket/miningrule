@@ -15,6 +15,9 @@ public class R {
     private String  featureAlpha = "2";
     public  List<I> values       = new LinkedList<>();
 
+    public R() {
+    }
+
     public String getRaw() {
         final StringBuffer sb = new StringBuffer();
         for (I val : values) {
@@ -26,11 +29,18 @@ public class R {
         return sb.toString();
     }
 
-    public R negative() {
+    public R negative(final BigInteger xorBit) {
         if (isItemsNotMixed()) {
-            R negRule = new R(getRaw(), null, null);
-            negRule.type = getNegType();
-            return negRule;
+            R nr = new R();
+            nr.bit = bit.xor(xorBit);
+            nr.type = getNegType();
+            if (values.size() != 1) {
+                nr.level = values.size();
+            } else {
+                nr.level = 1;
+            }
+            nr.values.addAll(values);
+            return nr;
         }
         return null;
     }
