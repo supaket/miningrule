@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class F extends I {
-    public F(final String value, final List<String> transLines, final BigInteger xorBit) {
-        super(value, transLines, xorBit);
+    public F(final String value, final List<String> transLines) {
+        super(value, transLines);
     }
 }

@@ -7,9 +7,10 @@ import java.util.List;
 
 public class R {
 
-    public Type       type;
-    public int        level;
-    public BigInteger bit;
+    private BigInteger xorBit;
+    public  Type       type;
+    public  int        level;
+    public  BigInteger bit;
 
     private String  classAlpha   = "1";
     private String  featureAlpha = "2";
@@ -29,11 +30,12 @@ public class R {
         return sb.toString();
     }
 
-    public R negative(final BigInteger xorBit) {
+    public R negative() {
         if (isItemsNotMixed()) {
             R nr = new R();
             nr.bit = bit.xor(xorBit);
             nr.type = getNegType();
+            nr.xorBit = xorBit;
             if (values.size() != 1) {
                 nr.level = values.size();
             } else {
@@ -57,23 +59,21 @@ public class R {
     }
 
     public R(String i, final List<String> transLines, final BigInteger xorBit) {
-        if (bit == null) {
-            bit = xorBit.xor(xorBit);
-        }
 
         type = getType(i);
+        this.xorBit = xorBit;
 
         switch (type) {
             case n:
             case p:
                 level = 1;
                 if (isClass(i)) {
-                    C r = new C(i, transLines, xorBit);
-                    bit = bit.and(r.bit);
+                    C r = new C(i, transLines);
+                    bit = r.bit;
                     values.add(r);
                 } else {
-                    F r = new F(i, transLines, xorBit);
-                    bit = bit.and(r.bit);
+                    F r = new F(i, transLines);
+                    bit = r.bit;
                     values.add(r);
                 }
                 break;
@@ -84,12 +84,20 @@ public class R {
                     String[] items = i.split("\\s+");
                     for (String item : items) {
                         if (isClass(item)) {
-                            C r = new C(item, transLines, xorBit);
-                            bit = bit.and(r.bit);
+                            C r = new C(item, transLines);
+                            if (bit == null) {
+                                bit = r.bit;
+                            } else {
+                                bit = bit.and(r.bit);
+                            }
                             values.add(r);
                         } else {
-                            F r = new F(item, transLines, xorBit);
-                            bit = bit.and(r.bit);
+                            F r = new F(item, transLines);
+                            if (bit == null) {
+                                bit = r.bit;
+                            } else {
+                                bit = bit.and(r.bit);
+                            }
                             values.add(r);
                         }
                     }
@@ -161,5 +169,17 @@ public class R {
         String[] split = s.split("\\s+");
         List<String> items = java.util.Arrays.asList(split);
         return new java.util.ArrayList<>(items);
+    }
+
+    @Override
+    public String toString() {
+        String zero = "";
+        if (bit.bitLength() != xorBit.bitLength()) {
+            long leftZeroLength = xorBit.bitLength() - bit.bitLength();
+            for (long i = 0; i < leftZeroLength; i++) {
+                zero += "0";
+            }
+        }
+        return zero + bit.toString(2);
     }
 }

@@ -26,7 +26,7 @@ public class I {
         return values.toString();
     }
 
-    public I(final String value, List<String> transLines, BigInteger xorBit) {
+    public I(final String value, List<String> transLines) {
         if (null != value) {
             String[] ir = value.split("\\s+");
             for (String item : ir) {
@@ -45,7 +45,7 @@ public class I {
             }
             return new BigInteger(sb.toString(), 2);
         }
-        return null;
+        return BigInteger.ZERO;
     }
 
     private boolean isFreqItemFoundInTrans(String line) {
